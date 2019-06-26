@@ -19,6 +19,10 @@ class Parser {
         const plistInfo = Plist.parse(Fs.readFileSync(this.plistPath, 'utf-8'));
 
         const info = plistInfo.metadata;
+        if (!info) {
+            console.log('sprite frame info is not exist.'.red);
+            return false;
+        }
         const dirName = Path.dirname(this.plistPath);
         this.textureAtlasPath = Path.join(dirName, info.realTextureFileName || info.textureFileName);
 
@@ -57,7 +61,8 @@ class Parser {
                 offsetStr = frame.spriteOffset;
                 textureRect = frame.textureRect;
             } else {
-                console.log('sprite frame format is not support'.red);
+                console.log('sprite frame format is not support.'.red);
+                return false;
             }
 
             subMeta.rotated = !!rotated;
@@ -80,6 +85,7 @@ class Parser {
         if (modifiedKeys.length > 0) {
             console.log(`Some of the frame keys have been reformatted : ${JSON.stringify(modifiedKeys)}`.green);
         }
+        return true;
     }
 
     getTextureAtlasPath() {

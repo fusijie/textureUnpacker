@@ -1,4 +1,6 @@
+const Path = require('path');
 const Fs = require('fs-extra');
+const KlawSync = require('klaw-sync');
 const commandLineArgs = require('command-line-args');
 const commandLineUsage = require('command-line-usage');
 const Colors = require('colors');
@@ -57,9 +59,9 @@ if (options.help) {
 } else if (options.file) {
     unpackFile(options.file);
 } else if (options.folder) {
-    console.log('TODO');
+    unpackFolder(options.folder);
 } else {
-    console.log("\nYou should specify plist file or folder.\n\nPlease try 'node index.js -h'".red);
+    console.log("\nYou should specify plist file or folder.\n\nPlease try 'node index.js -h'.".red);
 }
 
 function unpackFile(plistPath) {
@@ -69,7 +71,11 @@ function unpackFile(plistPath) {
     }
 
     let parser = new Parser(plistPath);
-    parser.parse();
+    let ret = parser.parse();
+    if (!ret) {
+        console.log(`${plistPath} is not support to parse.`.red);
+        return;
+    }
 
     let textureAtlasPath = parser.getTextureAtlasPath();
     if (!Fs.existsSync(textureAtlasPath)) {
@@ -79,4 +85,24 @@ function unpackFile(plistPath) {
 
     let unpacker = new Unpacker();
     unpacker.unpack(textureAtlasPath, parser.getSubMetas());
+}
+
+function unpackFolder(folderPath) {
+    if (!Fs.existsSync(folderPath)) {
+        console.log(`${folderPath} is not exist.`.red);
+        return;
+    }
+
+    const filterFn = item => {
+        const extname = Path.extname(item.path)
+        return extname === '.plist';
+    }
+
+    const plistPaths = KlawSync(folderPath, {
+        filter: filterFn
+    });
+
+    plistPaths.forEach((plistPath) => {
+        unpackFile(plistPath.path);
+    })
 }

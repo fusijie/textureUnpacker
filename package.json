@@ -15,6 +15,7 @@
     "command-line-args": "^5.1.1",
     "command-line-usage": "^5.0.5",
     "fs-extra": "^8.0.1",
+    "klaw-sync": "^6.0.0",
     "plist": "^3.0.1",
     "sharp": "^0.17.0"
   }
