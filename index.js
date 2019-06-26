@@ -59,7 +59,7 @@ if (options.help) {
 } else if (options.folder) {
     console.log('TODO');
 } else {
-    console.log("\nYou should specify plist file or folder.\n\nPlease try 'node index.js -h'");
+    console.log("\nYou should specify plist file or folder.\n\nPlease try 'node index.js -h'".red);
 }
 
 function unpackFile(plistPath) {
