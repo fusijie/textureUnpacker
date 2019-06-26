@@ -5,8 +5,8 @@ const commandLineArgs = require('command-line-args');
 const commandLineUsage = require('command-line-usage');
 const Colors = require('colors');
 
-const Parser = require('./parser');
-const Unpacker = require('./unpacker');
+const Parser = require('./src/parser');
+const Unpacker = require('./src/unpacker');
 
 const optionDefinitions = [{
         name: 'file',
@@ -61,7 +61,7 @@ if (options.help) {
 } else if (options.folder) {
     unpackFolder(options.folder);
 } else {
-    console.log("\nYou should specify plist file or folder.\n\nPlease try 'node index.js -h'.".red);
+    console.log("\nYou should specify plist file or folder.\n\nPlease try 'node app.js -h'.".red);
 }
 
 function unpackFile(plistPath) {
