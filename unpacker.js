@@ -1,18 +1,16 @@
-const Fs = require('fs');
+const Fs = require('fs-extra');
 const Path = require('path');
 const Sharp = require('sharp');
 const Async = require('async');
 
 class Unpacker {
-    constructor() {
-
-    }
+    constructor() {}
 
     unpack(textureAtlasPath, subMetas) {
         const dirName = Path.dirname(textureAtlasPath);
 
-        let extractedImageSaveFolder = Path.join(dirName, 'temp_unpack');
-        Fs.mkdirSync(extractedImageSaveFolder);
+        let extractedImageSaveFolder = Path.join(dirName, `${Path.basename(textureAtlasPath, Path.extname(textureAtlasPath))}_unpack`);
+        Fs.ensureDir(extractedImageSaveFolder);
 
         let spriteFrameNames = Object.keys(subMetas);
         Async.forEach(spriteFrameNames, function (spriteFrameName, next) {
@@ -55,11 +53,12 @@ class Unpacker {
                         width: rect.height,
                         height: rect.width
                     })
+                    .background('rgba(0,0,0,0)')
                     .extend({
                         top: trimmedTop,
                         bottom: trimmedBottom,
                         left: trimmedLeft,
-                        right: trimmedRight
+                        right: trimmedRight,
                     })
                     .rotate(270)
                     .toFile(extractedSmallPngSavePath, sharpCallback);
@@ -69,8 +68,9 @@ class Unpacker {
                         left: rect.x,
                         top: rect.y,
                         width: rect.width,
-                        height: rect.height
+                        height: rect.height,
                     })
+                    .background('rgba(0,0,0,0)')
                     .extend({
                         top: trimmedTop,
                         bottom: trimmedBottom,
@@ -82,8 +82,7 @@ class Unpacker {
             }
         }, () => {
             console.log(`There are ${spriteFrameNames.length} textures are generated!`);
-        }); // end of Async.forEach
-
+        });
     }
 }
 

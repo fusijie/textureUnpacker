@@ -1,4 +1,4 @@
-const Fs = require('fs');
+const Fs = require('fs-extra');
 const Plist = require('plist');
 const Path = require('path');
 
@@ -21,8 +21,6 @@ class Parser {
         const info = plistInfo.metadata;
         const dirName = Path.dirname(this.plistPath);
         this.textureAtlasPath = Path.join(dirName, info.realTextureFileName || info.textureFileName);
-
-        console.log(this.textureAtlasPath);
 
         const frames = plistInfo.frames;
         let modifiedKeys = [];
@@ -58,6 +56,8 @@ class Parser {
                 sourceSize = frame.spriteSourceSize;
                 offsetStr = frame.spriteOffset;
                 textureRect = frame.textureRect;
+            } else {
+                console.log('sprite frame format is not support'.red);
             }
 
             subMeta.rotated = !!rotated;
@@ -78,7 +78,7 @@ class Parser {
         }
 
         if (modifiedKeys.length > 0) {
-            console.warn('Some of the frame keys have been reformatted : ' + JSON.stringify(modifiedKeys));
+            console.log(`Some of the frame keys have been reformatted : ${JSON.stringify(modifiedKeys)}`.green);
         }
     }
 
